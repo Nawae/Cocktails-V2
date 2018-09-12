@@ -13,19 +13,19 @@ LiquidCrystal monEcran(14,15,16,17,18,19); // Configuration de l'écran
 const int bout1 = 13; // Constante du pin bouton HAUT
 const int bout2 = 11; // Constante du pin bouton BAS
 const int bout3 = 12; // Constante du pin bouton VALIDATION
-const int boutparam = 10; // Constante du pin bouton pour paramétrer
+const int boutparam = 10; // Constante du pin bouton pour distribution unique
 int posMenu = 0; // Variable de position dans le menu
-int mode = 0;
+int mode = 0; // Permet de selectionner le menu
 String ligne1[4] = {"MODE :              ","Cocktails :           ","Distribution :            ","Setup :            "}; // Affichage de la première ligne
-String Menu[3] = {"1 - Cocktails      ", "2 - Distribution", "3 - Setup       "};
-String ligne2 = Menu[0];
-int nombreDeMenu = 3;
+String Menu[3] = {"1 - Cocktails      ", "2 - Distribution", "3 - Setup       "}; // Affichage du mode Menu 0
+String ligne2 = Menu[0]; // Initiation de la ligne 2 sur le menu pour le premier démarrage
+int nombreDeMenu = 3; // Constante du nombre de menu pour le modulo
 String Recettes[12] = {"1-Ti Punch      ","2-Gin Tonic'    ", "3-Planteur      ", "4-Loeiza (SA)      ","5-Gimlet       ","6-Le Bali    ","7-Christopher      ","8-Le Leo       ","9-Flora Dora     ","10-Gin Fizz       ","11-Bacardi Cocktail      ","12-Le Cendrillon (SA)      "}; // Tableau de recette
 int nombreDeRecettes = 12; // Permet le modula pour revenir à 1 en cycle navigation
-String Pompes[8] = {"Pompe 1      ", "Pompe 2      ", "Pompe 3      ", "Pompe 4      ", "Pompe 5      ", "Pompe 6      ", "Pompe 7      ", "Pompe 8      "};
-int nombreDePompes = 8;
-String CL[10] = {"1 cl      ", "2 cl      ", "3 cl      ", "4 cl      ", "5 cl      ", "6 cl      ", "7 cl      ", "8 cl      ", "9 cl      ", "10 cl      "};
-int nombreDeCL = 10;
+String Pompes[8] = {"Pompe 1      ", "Pompe 2      ", "Pompe 3      ", "Pompe 4      ", "Pompe 5      ", "Pompe 6      ", "Pompe 7      ", "Pompe 8      "}; // Afficahge du menu pour la distribution
+int nombreDePompes = 8; // Constante du nombre de pompe pour le modulo
+String CL[10] = {"1 cl      ", "2 cl      ", "3 cl      ", "4 cl      ", "5 cl      ", "6 cl      ", "7 cl      ", "8 cl      ", "9 cl      ", "10 cl      "}; // Affichage pour la distribution unique
+int nombreDeCL = 10; // Constante du nombre de CL pour le modulo
 const int orange = 1; // Pin rattaché à la board relais, auquel est relié l'alimentation du moteur contrôlant la pompe de jus d'Orange.
 const int schwepps = 2; // Pin pour la board relais
 const int grenadine = 3; // Pin pour la board relais
@@ -85,7 +85,7 @@ void navigation() {
   boolean etatBoutParam = digitalRead(boutparam); // Déclaration d'un booléen pour savoir si le bouton est appuyé
   //Boucle pour naviguer dans les menus
   switch (mode) {
-    case 0:
+    case 0: // Cas du mode Menu principal
      if (etatBout1 || etatBout2 || etatBout3 || etatBoutParam) { // Boucle pour les boutons avec delay
      if (etatBout1) { // Si le bouton 1 (HAUT) est appuyé
        posMenu = (posMenu + 1) % nombreDeMenu; // On avance la position de lecture, On avance dans le tableau
@@ -100,31 +100,33 @@ void navigation() {
        }
        ligne2 = Menu[posMenu];
      }
-      if (etatBout3) { // Si on valide la sélection, 
+      if (etatBout3) { // Si on valide la sélection, on rentre dans un menu
        monEcran.clear(); // On efface l'écran
-       mode = posMenu + 1; // On réinitialise l'affichage
+       mode = posMenu + 1; // On positionne le mode en fonction de la position du curseur +1 pour l'affichage
        switch (mode) {
           case 1:
-            ligne2 = Recettes[0];
+            ligne2 = Recettes[0]; // Si c'est la première selection, alors cocktails, donc on affiche le menu des recettes
             break;
           case 2:
-            ligne2 = Pompes[0];
+            ligne2 = Pompes[0]; // Si c'est la deuxième selection, alors distribution unique, donc on affiche le tableau des pompes
             break;
           case 3:
-            ligne2 = "Phase de Setup";
+            ligne2 = "Phase de Setup"; // Si c'est la deuxième selection, alors on lance le mode SETUP
+          default:
+            ligne2 = "Erreur";
        }
        }
-     if (etatBoutParam) { // Si le bouton Initialisation est appuyé
-       initialisation(); //On lance la fonction qui charge les tuyaux
+     if (etatBoutParam) { // Si le bouton supplémentaire est appuyé
+       initialisation(); //On lance la distribution pour le whisky
      }
   }
      delay(200); //attente pour éviter les répétitions
      break;
-    case 1:
+    case 1: //On lance la phase cocktails
      if (etatBout1 || etatBout2 || etatBout3 || etatBoutParam) { // Boucle pour les boutons avec delay
      if (etatBout1) { // Si le bouton 1 (HAUT) est appuyé
        posMenu = (posMenu + 1) % nombreDeRecettes; // On avance la position de lecture, On avance dans le tableau
-       ligne2 = Recettes[posMenu];
+       ligne2 = Recettes[posMenu]; 
      }
      if (etatBout2) { // Si le bouton 2 (BAS) est appuyé
        if (posMenu == 0) { // Si on était sur la position 0, et pour éviter la position -1 (bug), On fixe à la dernière valeur
@@ -135,8 +137,11 @@ void navigation() {
        }
        ligne2 = Recettes[posMenu];
      }
-      if (etatBout3) { // Si on valide la sélection, 
+      if (etatBout3) { // Si on valide la sélection, on lance la distribution du cocktails
        distribution();
+       mode=0; // On revient au mode général
+       posMenu = 0;
+       ligne2 = Menu[posMenu];
      }
      if (etatBoutParam) { // Si le bouton Initialisation est appuyé
        initialisation(); //On lance la fonction qui charge les tuyaux
@@ -162,6 +167,35 @@ void navigation() {
       if (etatBout3) { // Si on valide la sélection, 
        mode = 4 ;
        ligne2 = CL[posMenu];
+       }
+     if (etatBoutParam) { // Si le bouton Initialisation est appuyé
+       initialisation(); //On lance la fonction qui charge les tuyaux
+     }
+     }
+     delay(200); //attente pour éviter les répétitions
+     break;
+    case 3: // SETUP
+
+    
+     if (etatBout1 || etatBout2 || etatBout3 || etatBoutParam) { // Boucle pour les boutons avec delay
+     if (etatBout1) { // Si le bouton 1 (HAUT) est appuyé
+       posMenu = (posMenu + 1) % nombreDeCL; // On avance la position de lecture, On avance dans le tableau
+       ligne2 = CL[posMenu];
+     }
+     if (etatBout2) { // Si le bouton 2 (BAS) est appuyé
+       if (posMenu == 0) { // Si on était sur la position 0, et pour éviter la position -1 (bug), On fixe à la dernière valeur
+          posMenu = (nombreDeCL-1) % nombreDeCL; // On évite le chiffre négatif en retournant à la fin du tableau.
+       }
+       else {
+         posMenu = (posMenu - 1) % nombreDeCL; // On recule dans le tableau
+       }
+       ligne2 = CL[4];
+     }
+      if (etatBout3) { // Si on valide la sélection, 
+       ligne2 = "Distribu Unique";
+       delay(000);
+       mode=0;
+       ligne2 = Menu[0];
        }
      if (etatBoutParam) { // Si le bouton Initialisation est appuyé
        initialisation(); //On lance la fonction qui charge les tuyaux
