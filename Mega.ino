@@ -4,6 +4,7 @@
 
 //CHARGEMENT DES LIBRAIRIES
 #include <LiquidCrystal.h> // Chargement de la librairie pour l'écran LCD
+#include <avr/pgmspace.h> // Chargement pour la gestion de la mémoire PROGMEM
 
 //CONFIGURATION LCD
 //LiquidCrystal nomDeVariable(RS, E, d4, d5, d6, d7);
@@ -16,18 +17,22 @@ const int bout3 = 12; // Constante du pin bouton VALIDATION
 const int boutunique = 10; // Constante du pin bouton pour distribution unique
 int posMenu = 0; // Variable de position dans le menu
 int mode = 0; // Permet de selectionner le menu
-const String ligne1[4] = {"MODE :              ","Cocktails :           ","Distribution :            ","Setup :            "}; // Affichage de la première ligne
-const String Menu[3] = {"1 - Cocktails      ", "2 - Distribution", "3 - Setup       "}; // Affichage du mode Menu 0
+const String ligne1[] = {"MODE :              ","Cocktails :           ","Distribution :   ","Setup :         ","Quantite :      ", "Chargement :    ", "Purge :         "}; // Affichage de la première ligne
+const String Menu[] = {"1 - Cocktails      ", "2 - Distribution", "3 - Setup       "}; // Affichage du mode Menu 0
 String ligne2 = Menu[0]; // Initiation de la ligne 2 sur le menu pour le premier démarrage
 const int nombreDeMenu = 3; // Constante du nombre de menu pour le modulo
-const String Recettes[13] = {"1-Ti Punch      ", "2-Gin Tonic'    ", "3-Planteur      ", "4-Loeiza (SA)      ","5-Gimlet       ","6-Le Bali    ","7-Christopher      ","8-Le Leo       ","9-Flora Dora     ","10-Gin Fizz       ","11-Bacardi Cockt","12-Le Cendrillon","RETOUR             "}; // Tableau de recette
-//const String Recettes[13] = {"1-Ti Punch      "}; // Tableau de recette
+//const String Recettes[] = {"1-Ti Punch      ", "2-Gin Tonic'    ", "3-Planteur      ", "4-Loeiza (SA)      ","5-Gimlet       ","6-Le Bali    ","7-Christopher      ","8-Le Leo       ","9-Flora Dora     ","10-Gin Fizz       ", "11-Bacardi Cockt", "12-Le Cendrillon", "RETOUR             "}; // Tableau de recette
+const String Recettes[13] = {"1-Ti Punch      "}; // Tableau de recette
 const int nombreDeRecettes = 13; // Permet le modula pour revenir à 1 en cycle navigation
-const String Pompes[15] = {"Pompe 1 ", "Pompe 2 ", "Pompe 3 ", "Pompe 4 ", "Pompe 5 ", "Pompe 6 ", "Pompe 7 ", "Pompe 8 ", "Pompe 9 ", "Pompe 10 ", "Pompe 11 ", "Pompe 12 ", "Pompe 13 ", "Pompe 14 ", "Pompe 15 "}; // Affichage du menu pour la distribution
-const int nombreDePompes = 15; // Constante du nombre de pompe pour le modulo
+//const String Pompes[] = {"Pompe 1   ", "Pompe 2   ", "Pompe 3   ", "Pompe 4   ", "Pompe 5   ", "Pompe 6   ", "Pompe 7   ", "Pompe 8   ", "Pompe 9   ", "Pompe 10  ", "Pompe 11  ", "Pompe 12  ", "Pompe 13  ", "Pompe 14  ", "Pompe 15  ", "Pompe 16  ", "RETOUR             "}; // Affichage du menu pour la distribution
+const String Pompes[] = {"Pompe 1 ", "Pompe 2 "}; // Affichage du menu pour la distribution
+const int nombreDePompes = 17; // Constante du nombre de pompe pour le modulo
 int lapompe ; // Variable pour sauvegarder le numéro de la pompe
-const String CL[10] = {"1 cl    ", "2 cl    ", "3 cl    ", "4 cl    ", "5 cl    ", "6 cl    ", "7 cl    ", "8 cl    ", "9 cl    ", "10 cl  "}; // Affichage pour la distribution unique
+//const String CL[] = {"1 cl    ", "2 cl    ", "3 cl    ", "4 cl    ", "5 cl    ", "6 cl    ", "7 cl    ", "8 cl    ", "9 cl    ", "10 cl  "}; // Affichage pour la distribution unique
+const String CL[] = {"1 cl    ", "2 cl    ", "3 cl    "}; // Affichage pour la distribution unique
 const int nombreDeCL = 10; // Constante du nombre de CL pour le modulo
+const String Setup[] = {"Chargement    ", "Purge     ", "RETOUR    "}; // Menu SETUP
+const int nombreDeSetup = 3; // Constante du Setup pour le modulo
 const int orange = 1; // Pin rattaché à la board relais, auquel est relié l'alimentation du moteur contrôlant la pompe de jus d'Orange.
 const int schwepps = 2; // Pin pour la board relais
 const int grenadine = 3; // Pin pour la board relais
@@ -119,16 +124,15 @@ void navigation() {
        mode = posMenu + 1; // On positionne le mode en fonction de la position du curseur +1 pour l'affichage
        switch (mode) {
           case 1:
-            posMenu = 0; // On repositionne le curseur au début
             ligne2 = Recettes[0]; // Si c'est la première selection, alors cocktails, donc on affiche le menu des recettes
-            posMenu = 0;
+            posMenu = 0; // On repositionne le curseur au début
             break;
           case 2:
             ligne2 = Pompes[0]; // Si c'est la deuxième selection, alors distribution unique, donc on affiche le tableau des pompes
             posMenu = 0;
             break;
           case 3:
-            ligne2 = "Phase de Setup"; // Si c'est la troisième selection, alors on lance le mode SETUP
+            ligne2 = Setup[0]; // Si c'est la troisième selection, alors on lance le mode SETUP
             posMenu = 0;
             break;
           default:
@@ -198,8 +202,9 @@ void navigation() {
           posMenu = 0;
         }
         else { // On a validé le choix de la pompe. On sauvegarde le numéro, et on propose le nombre de cl.
-       lapompe = (posMenu - 1);
-       mode = 4 ;
+       lapompe = posMenu; // On sauvegarde le numéro de la pompe, en fonction de la position du meno, si menu = 0 alors pompe 1 
+       posMenu = 0 ;
+       mode = 4 ; // On passe en mode "caché" en affichant le menu mode 4 pour les Cls.
        ligne2 = CL[posMenu];
         }
       }
@@ -212,22 +217,35 @@ void navigation() {
     case 3: // SETUP
      if (etatBout1 || etatBout2 || etatBout3 || etatBoutUnique) { // Boucle pour les boutons avec delay
      if (etatBout1) { // Si le bouton 1 (HAUT) est appuyé
-       posMenu = (posMenu + 1) % nombreDeCL; // On avance la position de lecture, On avance dans le tableau
-       ligne2 = CL[posMenu];
+       posMenu = (posMenu + 1) % nombreDeSetup; // On avance la position de lecture, On avance dans le tableau
+       ligne2 = Setup[posMenu];
      }
      if (etatBout2) { // Si le bouton 2 (BAS) est appuyé
        if (posMenu == 0) { // Si on était sur la position 0, et pour éviter la position -1 (bug), On fixe à la dernière valeur
-          posMenu = (nombreDeCL-1) % nombreDeCL; // On évite le chiffre négatif en retournant à la fin du tableau.
+          posMenu = (nombreDeSetup-1) % nombreDeSetup; // On évite le chiffre négatif en retournant à la fin du tableau.
        }
        else {
-         posMenu = (posMenu - 1) % nombreDeCL; // On recule dans le tableau
+         posMenu = (posMenu - 1) % nombreDeSetup; // On recule dans le tableau
        }
      }
-      if (etatBout3) { // Si on valide la sélection, 
-       ligne2 = "Distribu Unique";
-       delay(2000);
-       mode=0;
-       ligne2 = Menu[0];
+      if (etatBout3) { // Si on valide la sélection,
+        if (posMenu == (nombreDeSetup-1)) { // Si la position dans le menu est la dernière , alors c'est un retour, sinon on lance
+          mode = 0; // Renvoi vers le menu général
+          ligne2 = Menu[0]; // Deuxieme ligne avec le choix du mode
+          posMenu = 0;
+        }
+        else {
+        if (posMenu == 0) { // Si on est sur le 0, cela signifie le Chargement
+        mode = 5; // Chargement du mode caché pour le chargement
+        ligne2 = Pompes[0];
+        posMenu = 0;        
+       }
+       else { // On lance la purge
+        mode = 6; // Chargement du mode caché pour la purge
+        ligne2 = Pompes[0];
+        posMenu = 0;        
+       }
+       }
        }
      if (etatBoutUnique) { // Si le bouton Initialisation est appuyé
        initialisation(); //On lance la fonction qui charge les tuyaux
@@ -235,7 +253,7 @@ void navigation() {
      }
      delay(200); //attente pour éviter les répétitions
      break;
-    case 4:
+    case 4: // Sous menu pour le nombre de Cl pour le Shaker
      if (etatBout1 || etatBout2 || etatBout3 || etatBoutUnique) { // Boucle pour les boutons avec delay
      if (etatBout1) { // Si le bouton 1 (HAUT) est appuyé
        posMenu = (posMenu + 1) % nombreDeCL; // On avance la position de lecture, On avance dans le tableau
@@ -250,9 +268,117 @@ void navigation() {
        }
        ligne2 = CL[posMenu];
      }
-      if (etatBout3) { // Si on valide la sélection, 
-       ligne2 = "Distribu Unique";
+      if (etatBout3) { // Si on valide la sélection, on lance la fonction de distribution unique 
+        monEcran.clear(); // On efface l'écran
+        monEcran.setCursor(0, 0); // On initialise le curseur en haut
+        monEcran.print("DISTRIBUTION"); // On affiche le titre
+        monEcran.setCursor(0, 1); // On postionne le curseur sur la deuxième ligne
+        monEcran.print("UNIQUE "); // On affiche la recette
+        monEcran.setCursor(8, 1); // On postionne le curseur sur la deuxième ligne au 2ème pixel
+        delay (1000);
+        monEcran.setCursor(0, 0); // On initialise le curseur en haut
+        monEcran.print("DISTRIBUTION ..."); // On affiche le titre
+        //On allume la pompe
+      temps = millis(); // On sauvegarde l'heure actuel
+      digitalWrite(posMenu, LOW);
+      do // On lance une boucle qui ne s'arrêtera qu'à la fin de la distribution.
+      {
+       avancement = ((millis() - temps)/conv(posMenu+1)*100);
+       draw_progressbar(avancement);
+       pompeV2(lapompe, (posMenu+1)); //  Si la Pompe est activée, alors on regarde si elle a pu délivrer x Cl ( x CL = X * 6000 millisecondes). Si c'est le cas, alors on coupe la pompe, sinon on laisse allumer.
+      } while ((millis() - temps) < conv(posMenu+1)); // Tant qu'on ne dépasse pas le temps nécessaire au plus grand liquide 
+      draw_progressbar(100);
+      monEcran.setCursor(0, 0); // On postionne le curseur sur la première ligne
+      monEcran.print("QUANTITE SERVIE"); // On affiche un message de dégustation
+      delay(2000);
+      mode = 0 ;
+      ligne2 = Menu[0];
+      posMenu = 0 ;
        }
+     if (etatBoutUnique) { // Si le bouton Initialisation est appuyé
+       initialisation(); //On lance la fonction qui charge les tuyaux
+     }
+     }
+     delay(200); //attente pour éviter les répétitions
+     break;
+    case 5: // Sous menu pour le chargement unitaire des pompes.
+     if (etatBout1 || etatBout2 || etatBout3 || etatBoutUnique) { // Boucle pour les boutons avec delay
+     if (etatBout1) { // Si le bouton 1 (HAUT) est appuyé
+       posMenu = (posMenu + 1) % nombreDePompes; // On avance la position de lecture, On avance dans le tableau
+       ligne2 = Pompes[posMenu];
+     }
+     if (etatBout2) { // Si le bouton 2 (BAS) est appuyé
+       if (posMenu == 0) { // Si on était sur la position 0, et pour éviter la position -1 (bug), On fixe à la dernière valeur
+          posMenu = (nombreDePompes-1) % nombreDePompes; // On évite le chiffre négatif en retournant à la fin du tableau.
+       }
+       else {
+         posMenu = (posMenu - 1) % nombreDePompes; // On recule dans le tableau
+       }
+       ligne2 = Pompes[posMenu];
+     }
+      if (etatBout3) { // Si on valide la sélection, 
+        if (posMenu == (nombreDePompes-1)) { // Si la position dans le menu  est la dernière , alors c'est un retour, sinon on lance le chargement
+          mode = 0; // Renvoi vers le menu général
+          ligne2 = Menu[0]; // Deuxieme ligne avec le choix du mode
+          posMenu = 0;
+        }
+        else { // On a validé le choix de la pompe. On lance le chargement du tuyau
+      temps = millis(); // On sauvegarde l'heure actuel
+      digitalWrite(posMenu, LOW);
+      do // On lance une boucle qui ne s'arrêtera qu'à la fin du chargement.
+      {
+       avancement = ((millis() - temps)/conv(2)*100);
+       draw_progressbar(avancement);
+       pompeV2(posMenu,2); //  Si la Pompe est activée, alors on regarde si elle a pu délivrer x Cl ( x CL = X * 6000 millisecondes). Si c'est le cas, alors on coupe la pompe, sinon on laisse allumer.
+       //Serial.println((millis() - temps));
+      } while ((millis() - temps) < conv(2)); // Tant qu'on ne dépasse pas le temps nécessaire au plus grand liquide
+       posMenu = 0 ;
+       mode = 0 ; 
+       ligne2 = Menu[posMenu];
+        }
+      }
+     if (etatBoutUnique) { // Si le bouton Initialisation est appuyé
+       initialisation(); //On lance la fonction qui charge les tuyaux
+     }
+     }
+     delay(200); //attente pour éviter les répétitions
+     break;
+    case 6: // Sous menu pour la purge unitaire des pompes.
+     if (etatBout1 || etatBout2 || etatBout3 || etatBoutUnique) { // Boucle pour les boutons avec delay
+     if (etatBout1) { // Si le bouton 1 (HAUT) est appuyé
+       posMenu = (posMenu + 1) % nombreDePompes; // On avance la position de lecture, On avance dans le tableau
+       ligne2 = Pompes[posMenu];
+     }
+     if (etatBout2) { // Si le bouton 2 (BAS) est appuyé
+       if (posMenu == 0) { // Si on était sur la position 0, et pour éviter la position -1 (bug), On fixe à la dernière valeur
+          posMenu = (nombreDePompes-1) % nombreDePompes; // On évite le chiffre négatif en retournant à la fin du tableau.
+       }
+       else {
+         posMenu = (posMenu - 1) % nombreDePompes; // On recule dans le tableau
+       }
+       ligne2 = Pompes[posMenu];
+     }
+      if (etatBout3) { // Si on valide la sélection, 
+        if (posMenu == (nombreDePompes-1)) { // Si la position dans le menu  est la dernière , alors c'est un retour, sinon on lance le chargement
+          mode = 0; // Renvoi vers le menu général
+          ligne2 = Menu[0]; // Deuxieme ligne avec le choix du mode
+          posMenu = 0;
+        }
+        else { // On a validé le choix de la pompe. On lance la purge du tuyau
+      temps = millis(); // On sauvegarde l'heure actuel
+      digitalWrite(posMenu, LOW);
+      do // On lance une boucle qui ne s'arrêtera qu'à la fin du chargement.
+      {
+       avancement = ((millis() - temps)/conv(3)*100);
+       draw_progressbar(avancement);
+       pompeV2(posMenu,3); //  Si la Pompe est activée, alors on regarde si elle a pu délivrer x Cl ( x CL = X * 6000 millisecondes). Si c'est le cas, alors on coupe la pompe, sinon on laisse allumer.
+       //Serial.println((millis() - temps));
+      } while ((millis() - temps) < conv(3)); // Tant qu'on ne dépasse pas le temps nécessaire au plus grand liquide
+       posMenu = 0 ;
+       mode = 0 ; 
+       ligne2 = Menu[posMenu];
+        }
+      }
      if (etatBoutUnique) { // Si le bouton Initialisation est appuyé
        initialisation(); //On lance la fonction qui charge les tuyaux
      }
@@ -501,6 +627,7 @@ void distribution() {
     // Pour chaque Pin du relais, on les désactive tout de suite. Sécurité
     digitalWrite(i,HIGH);
   }
+  delay(1000);
 }
 
 //FONCTION CONVERSATION CL EN MILLISECONDES
@@ -528,7 +655,7 @@ void initialisation() {
   monEcran.setCursor(0, 1); // On postionne le curseur sur la deuxième ligne
   monEcran.print("EN COURS "); // On affiche 
      
-  for(int i = 1; i <= 8; i++) {
+  for(int i = 1; i <= 16; i++) {
      // Pour chaque Pin du relais, on active
     digitalWrite(i, LOW);
   }
@@ -552,7 +679,7 @@ void purge() {
   monEcran.print("PURGE"); // On affiche le titre
   monEcran.setCursor(0, 1); // On postionne le curseur sur la deuxième ligne
   monEcran.print("EN COURS "); // On affiche
-  for(int i = 1; i <= 8; i++) {
+  for(int i = 1; i <= 16; i++) {
     // Pour chaque Pin du relais, on active
     digitalWrite(i, LOW);
   }
