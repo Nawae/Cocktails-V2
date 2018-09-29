@@ -9,7 +9,7 @@
 
 //CONFIGURATION LCD
 //LiquidCrystal nomDeVariable(RS, E, d4, d5, d6, d7);
-LiquidCrystal monEcran(14,15,16,17,18,19); // Configuration de l'écran
+LiquidCrystal monEcran(52,50,48,46,44,42); // Configuration de l'écran
 
 //CONFIGURATION MUSIQUE
 const int SPEAKER = 24;
@@ -32,15 +32,15 @@ const String ligne1[] = {"MODE :              ","Cocktails :           ","Distri
 const String Menu[] = {"1 - Cocktails      ", "2 - Distribution", "3 - Setup       "}; // Affichage du mode Menu 0
 String ligne2 = Menu[0]; // Initiation de la ligne 2 sur le menu pour le premier démarrage
 const int nombreDeMenu = 3; // Constante du nombre de menu pour le modulo
-//const String Recettes[] = {"1-Ti Punch      ", "2-Gin Tonic'    ", "3-Planteur      ", "4-Loeiza (SA)      ","5-Gimlet       ","6-Le Bali    ","7-Christopher      ","8-Le Leo       ","9-Flora Dora     ","10-Gin Fizz       ", "11-Bacardi Cockt", "12-Le Cendrillon", "RETOUR             "}; // Tableau de recette
-const String Recettes[13] = {"1-Ti Punch      "}; // Tableau de recette
+const String Recettes[] = {"1-Ti Punch      ", "2-Gin Tonic'    ", "3-Planteur      ", "4-Loeiza (SA)      ","5-Gimlet       ","6-Le Bali    ","7-Christopher      ","8-Le Leo       ","9-Flora Dora     ","10-Gin Fizz       ", "11-Bacardi Cockt", "12-Le Cendrillon", "RETOUR             "}; // Tableau de recette
+//const String Recettes[13] = {"1-Ti Punch      "}; // Tableau de recette
 const int nombreDeRecettes = 13; // Permet le modula pour revenir à 1 en cycle navigation
-//const String Pompes[] = {"Pompe 1   ", "Pompe 2   ", "Pompe 3   ", "Pompe 4   ", "Pompe 5   ", "Pompe 6   ", "Pompe 7   ", "Pompe 8   ", "Pompe 9   ", "Pompe 10  ", "Pompe 11  ", "Pompe 12  ", "Pompe 13  ", "Pompe 14  ", "Pompe 15  ", "Pompe 16  ", "RETOUR             "}; // Affichage du menu pour la distribution
-const String Pompes[] = {"Pompe 1 ", "Pompe 2 "}; // Affichage du menu pour la distribution
+const String Pompes[] = {"Pompe 1   ", "Pompe 2   ", "Pompe 3   ", "Pompe 4   ", "Pompe 5   ", "Pompe 6   ", "Pompe 7   ", "Pompe 8   ", "Pompe 9   ", "Pompe 10  ", "Pompe 11  ", "Pompe 12  ", "Pompe 13  ", "Pompe 14  ", "Pompe 15  ", "Pompe 16  ", "RETOUR             "}; // Affichage du menu pour la distribution
+//const String Pompes[] = {"Pompe 1 ", "Pompe 2 "}; // Affichage du menu pour la distribution
 const int nombreDePompes = 17; // Constante du nombre de pompe pour le modulo
 int lapompe ; // Variable pour sauvegarder le numéro de la pompe
-//const String CL[] = {"1 cl    ", "2 cl    ", "3 cl    ", "4 cl    ", "5 cl    ", "6 cl    ", "7 cl    ", "8 cl    ", "9 cl    ", "10 cl  "}; // Affichage pour la distribution unique
-const String CL[] = {"1 cl    ", "2 cl    ", "3 cl    "}; // Affichage pour la distribution unique
+const String CL[] = {"1 cl    ", "2 cl    ", "3 cl    ", "4 cl    ", "5 cl    ", "6 cl    ", "7 cl    ", "8 cl    ", "9 cl    ", "10 cl  "}; // Affichage pour la distribution unique
+//const String CL[] = {"1 cl    ", "2 cl    ", "3 cl    "}; // Affichage pour la distribution unique
 const int nombreDeCL = 10; // Constante du nombre de CL pour le modulo
 const String Setup[] = {"Chargement    ", "Purge     ", "RETOUR    "}; // Menu SETUP
 const int nombreDeSetup = 3; // Constante du Setup pour le modulo
@@ -311,13 +311,15 @@ void navigation() {
         monEcran.setCursor(8, 1); // On postionne le curseur sur la deuxième ligne au 2ème pixel
         delay (1000);
         monEcran.setCursor(0, 0); // On initialise le curseur en haut
-        monEcran.print("DISTRIBUTION ..."); // On affiche le titre
+        monEcran.print("DISTRIBUTION"); // On affiche le titre
+        monEcran.setCursor(13, 0); // On initialise le curseur en haut
+        monEcran.print(lapompe + 1); // On affiche le titre, rajout d'un +1 juste pour l'affichage.
         //On allume la pompe
       temps = millis(); // On sauvegarde l'heure actuel
-      digitalWrite(posMenu, LOW);
+      digitalWrite(lapompe, LOW); // Récupération de la sauvegarde du menu 2
       do // On lance une boucle qui ne s'arrêtera qu'à la fin de la distribution.
       {
-       avancement = ((millis() - temps)/conv(posMenu+1)*100);
+       avancement = ((millis() - temps)/conv(posMenu+1)*100); // Le "temps" posMenu+1 correspond à la position dans le menu lors du choix du nombre de CL. Si on choisi 4CL, alors on demande la position (3) +1. La fonction conv(4) permet ensuite de transformer cela en temps.
        draw_progressbar(avancement);
        pompeV2(lapompe, (posMenu+1)); //  Si la Pompe est activée, alors on regarde si elle a pu délivrer x Cl ( x CL = X * 6000 millisecondes). Si c'est le cas, alors on coupe la pompe, sinon on laisse allumer.
       } while ((millis() - temps) < conv(posMenu+1)); // Tant qu'on ne dépasse pas le temps nécessaire au plus grand liquide 
