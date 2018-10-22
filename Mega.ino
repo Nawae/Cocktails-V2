@@ -21,6 +21,7 @@ const int SPEAKER = 24;
 //CONFIGURATION DE L'ANNEAU DE LEDS
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(12, 22, NEO_GRB + NEO_KHZ800);
 
+
 //CONFIGURATION COCKTAILS & BOUTONS
 const int bout1 = 13; // Constante du pin bouton HAUT
 const int bout2 = 11; // Constante du pin bouton BAS
@@ -28,7 +29,7 @@ const int bout3 = 12; // Constante du pin bouton VALIDATION
 const int boutunique = 10; // Constante du pin bouton pour distribution unique
 int posMenu = 0; // Variable de position dans le menu
 int mode = 0; // Permet de selectionner le menu
-const String ligne1[] = {"MODE :              ","Cocktails :           ","Distribution :   ","Setup :         ","Quantite :      ", "Chargement :    ", "Purge :         "}; // Affichage de la première ligne
+const String ligne1[] = {"MODE :              ","Cocktails :           ","Distribution :   ","Setup :         ","Quantite :      ", "Chargement :    ", "Purge :         ", "Bluetooth :         "}; // Affichage de la première ligne
 const String Menu[] = {"1 - Cocktails      ", "2 - Distribution", "3 - Setup       "}; // Affichage du mode Menu 0
 String ligne2 = Menu[0]; // Initiation de la ligne 2 sur le menu pour le premier démarrage
 const int nombreDeMenu = 3; // Constante du nombre de menu pour le modulo
@@ -44,14 +45,30 @@ const String CL[] = {"1 cl    ", "2 cl    ", "3 cl    ", "4 cl    ", "5 cl    ",
 const int nombreDeCL = 10; // Constante du nombre de CL pour le modulo
 const String Setup[] = {"Chargement    ", "Purge     ", "RETOUR    "}; // Menu SETUP
 const int nombreDeSetup = 3; // Constante du Setup pour le modulo
-const int orange = 1; // Pin rattaché à la board relais, auquel est relié l'alimentation du moteur contrôlant la pompe de jus d'Orange.
-const int schwepps = 2; // Pin pour la board relais
-const int grenadine = 3; // Pin pour la board relais
-const int ananas = 4; // Pin pour la board relais
-const int citron = 5; // Pin pour la board relais
-const int rhum = 6; // Pin pour la board relais
-const int gin = 7; // Pin pour la board relais
-const int canadou = 8; // Pin pour la board relais
+const int orange = 53; // Pin rattaché à la board relais, auquel est relié l'alimentation du moteur contrôlant la pompe de jus d'Orange.
+const int schwepps = 51; // Pin pour la board relais
+const int grenadine = 49; // Pin pour la board relais
+const int ananas = 47; // Pin pour la board relais
+const int citron = 45; // Pin pour la board relais
+const int rhum = 43; // Pin pour la board relais
+const int gin = 41; // Pin pour la board relais
+const int canadou = 40; // Pin pour la board relais
+const int whisky = 39; // Pin pour la board relais
+const int boisson1 = 38; // Pin pour la board relais
+const int boisson2 = 37; // Pin pour la board relais
+const int boisson3 = 36; // Pin pour la board relais
+const int boisson4 = 35; // Pin pour la board relais
+const int boisson5 = 34; // Pin pour la board relais
+const int boisson6 = 33; // Pin pour la board relais
+const int boisson7 = 32; // Pin pour la board relais
+const int boisson8 = 31; // Pin pour la board relais
+const int boisson9 = 30; // Pin pour la board relais
+const int boisson10 = 29; // Pin pour la board relais
+const int boisson11 = 28; // Pin pour la board relais
+const int boisson12 = 27; // Pin pour la board relais
+const int boisson13 = 26; // Pin pour la board relais
+const int boisson14 = 25; // Pin pour la board relais
+const int boisson15 = 24; // Pin pour la board relais
 float temps; // Variable qui stocke la mesure du temps
 float avancement; // Variable pour la gestion de la barre de progression dynamique
 
@@ -88,8 +105,6 @@ void setup() {
   monEcran.print("DEMARRAGE"); 
   monEcran.setCursor(5,1); // On passe à la ligne suivante
   monEcran.print(" EN COURS"); 
-  delay(2000); // Permet de voir le rechargement du programme
-  monEcran.clear(); // On efface l'écran
 
   // Configuration des boutons
   pinMode(bout1, INPUT); // Déclaration du bouton comme entrée
@@ -105,12 +120,15 @@ void setup() {
   strip.begin();
   colorLED(strip.Color(0, 250, 0), 200); // Simulation de Chargement
   colorLED(strip.Color(0, 250, 0), 200); // Simulation de Chargement
-  colorLED(strip.Color(0, 0, 0), 1); // Simulation de Chargement
+  colorLED(strip.Color(0, 0, 0), 1); // Simulation de Chargement  
 
+  //Configuration Bluetooth
   Serial.begin(9600);
+  Serial3.begin(9600);
 }
 
 void loop() {
+  String message;
   int i;
   int j;
   j=0; // Initialisation de la variable permettant de gérer 255 couleurs. 
@@ -118,8 +136,17 @@ void loop() {
   {
     navigation(); // Appel de la fonction navigation en boucle pour capter les boutons
     affichage(); // Appel de la fonction affichage en boucle pour rafraichir l'écran en fonction des boutons (posmenu)
-    Serial.println(posMenu);
-    Serial.println(ligne2);
+
+    //Début Bluetooth
+    if (Serial3.available()) {
+      message = Serial3.readString();
+      Serial.println(message);
+    }
+    if (Serial.available()) {
+      message = Serial.readString();
+      Serial3.println(message);
+    }
+    //Fin Bluetooth
 
     for(i=0; i<strip.numPixels(); i++) { // Pour chaque led du Ring, 
       strip.setPixelColor(i, Wheel((i+j) & 255)); // On attribue une couleur
@@ -128,6 +155,7 @@ void loop() {
     delay(50); // On attend 50 millisec avant de rechanger
   j++; // On incrémente le compteur, et on passe à une autre couleur.
   } while (j<256);
+
 }
 
 //FONCTION NAVIGATION 
@@ -175,7 +203,7 @@ void navigation() {
        }
        }
      if (etatBoutUnique) { // Si le bouton supplémentaire est appuyé
-       initialisation(); //On lance la distribution pour le whisky
+       distrunique(); //On lance la distribution pour le whisky
      }
   }
      delay(200); //attente pour éviter les répétitions
@@ -209,7 +237,7 @@ void navigation() {
           }
         }
      if (etatBoutUnique) { // Si le bouton Initialisation est appuyé
-       initialisation(); //On lance la fonction qui charge les tuyaux
+       distrunique(); //On lance la fonction qui charge les tuyaux
       }
      }
      delay(200); //attente pour éviter les répétitions
@@ -243,7 +271,7 @@ void navigation() {
         }
       }
      if (etatBoutUnique) { // Si le bouton Initialisation est appuyé
-       initialisation(); //On lance la fonction qui charge les tuyaux
+       distrunique(); //On lance la fonction qui charge les tuyaux
      }
      }
      delay(200); //attente pour éviter les répétitions
@@ -282,7 +310,7 @@ void navigation() {
        }
        }
      if (etatBoutUnique) { // Si le bouton Initialisation est appuyé
-       initialisation(); //On lance la fonction qui charge les tuyaux
+       distrunique(); //On lance la fonction qui charge les tuyaux
      }
      }
      delay(200); //attente pour éviter les répétitions
@@ -332,7 +360,7 @@ void navigation() {
       posMenu = 0 ;
        }
      if (etatBoutUnique) { // Si le bouton Initialisation est appuyé
-       initialisation(); //On lance la fonction qui charge les tuyaux
+       distrunique(); //On lance la fonction qui charge les tuyaux
      }
      }
      delay(200); //attente pour éviter les répétitions
@@ -374,7 +402,7 @@ void navigation() {
         }
       }
      if (etatBoutUnique) { // Si le bouton Initialisation est appuyé
-       initialisation(); //On lance la fonction qui charge les tuyaux
+       distrunique(); //On lance la fonction qui charge les tuyaux
      }
      }
      delay(200); //attente pour éviter les répétitions
@@ -416,7 +444,7 @@ void navigation() {
         }
       }
      if (etatBoutUnique) { // Si le bouton Initialisation est appuyé
-       initialisation(); //On lance la fonction qui charge les tuyaux
+       distrunique(); //On lance la fonction qui charge les tuyaux
      }
      }
      delay(200); //attente pour éviter les répétitions
@@ -472,6 +500,8 @@ void distribution() {
         j=0;
       }
       // Fin du rainbow maison  
+      
+      
       } while ((millis() - temps) < conv(3)); // Tant qu'on ne dépasse pas le temps nécessaire au plus grand liquide (ici rhum)
       break;
      case 1: // Gin Tonic'
@@ -832,7 +862,31 @@ void pompeV2(int a, int b) { // a = numéro du PIN activant le relais; b = centi
 }
 
 //FONCTION INITIALISATION DES POMPES
-void initialisation() {
+void distrunique() {
+  monEcran.clear(); // On efface l'écran
+  monEcran.setCursor(0, 0); // On initialise le curseur en haut
+  monEcran.print("Distribution    "); // On affiche le titre
+  monEcran.setCursor(0, 1); // On postionne le curseur sur la deuxième ligne
+  monEcran.print("Whisky          "); // On affiche
+  delay (1000);
+  temps = millis(); // On sauvegarde l'heure actuel
+  digitalWrite(whisky, LOW);
+  do // On lance une boucle qui ne s'arrêtera qu'à la fin du chargement.
+  {
+   avancement = ((millis() - temps)/conv(4)*100);
+   draw_progressbar(avancement);
+   pompeV2(posMenu,4); //  Si la Pompe est activée, alors on regarde si elle a pu délivrer x Cl ( x CL = X * 6000 millisecondes). Si c'est le cas, alors on coupe la pompe, sinon on laisse allumer.
+   //Serial.println((millis() - temps));
+   } while ((millis() - temps) < conv(4)); // Tant qu'on ne dépasse pas le temps nécessaire au plus grand liquide
+   posMenu = 0 ;
+   mode = 0 ; 
+   ligne2 = Menu[posMenu];
+
+    Simpson();
+}
+
+//FONCTION INITIALISATION DES POMPES
+void chargement() {
   monEcran.clear(); // On efface l'écran
   monEcran.setCursor(0, 0); // On initialise le curseur en haut
   monEcran.print("INITIALISATION"); // On affiche le titre
@@ -850,7 +904,7 @@ void initialisation() {
       colorLED(strip.Color(0, 250, 0), 50); // Simulation de Chargement
      } while ((millis() - temps) < 7500); // Tant qu'on n'a pas rempli les tuyaux en 7,5 sec, on laisse allumé.
 
-    for(int i = 1; i <= 8; i++) {
+    for(int i = 1; i <= 16; i++) {
     // Pour chaque Pin du relais, on éteint
     digitalWrite(i, HIGH);
   }
@@ -875,7 +929,7 @@ void purge() {
       colorLED(strip.Color(250, 0, 0), 50); // Simulation de Purge
      } while ((millis() - temps) < 10000); // Tant qu'on n'a pas rempli les tuyaux d'eau en 10 sec, on laisse allumé.
 
-    for(int i = 1; i <= 8; i++) {
+    for(int i = 1; i <= 16; i++) {
     // Pour chaque Pin du relais, on éteint
     digitalWrite(i, HIGH);
   }
