@@ -18,99 +18,6 @@ const int SPEAKER = 54;
 #define QUARTER  2
 #define HALF 3
 
-//CONFIGURATION NOTES DE MUSIQUE
-#define NOTE_B0  31
-#define NOTE_C1  33
-#define NOTE_CS1 35
-#define NOTE_D1  37
-#define NOTE_DS1 39
-#define NOTE_E1  41
-#define NOTE_F1  44
-#define NOTE_FS1 46
-#define NOTE_G1  49
-#define NOTE_GS1 52
-#define NOTE_A1  55
-#define NOTE_AS1 58
-#define NOTE_B1  62
-#define NOTE_C2  65
-#define NOTE_CS2 69
-#define NOTE_D2  73
-#define NOTE_DS2 78
-#define NOTE_E2  82
-#define NOTE_F2  87
-#define NOTE_FS2 93
-#define NOTE_G2  98
-#define NOTE_GS2 104
-#define NOTE_A2  110
-#define NOTE_AS2 117
-#define NOTE_B2  123
-#define NOTE_C3  131
-#define NOTE_CS3 139
-#define NOTE_D3  147
-#define NOTE_DS3 156
-#define NOTE_E3  165
-#define NOTE_F3  175
-#define NOTE_FS3 185
-#define NOTE_G3  196
-#define NOTE_GS3 208
-#define NOTE_A3  220
-#define NOTE_AS3 233
-#define NOTE_B3  247
-#define NOTE_C4  262
-#define NOTE_CS4 277
-#define NOTE_D4  294
-#define NOTE_DS4 311
-#define NOTE_E4  330
-#define NOTE_F4  349
-#define NOTE_FS4 370
-#define NOTE_G4  392
-#define NOTE_GS4 415
-#define NOTE_A4  440
-#define NOTE_AS  455
-#define NOTE_AS4 466
-#define NOTE_B4  494
-#define NOTE_C5  523
-#define NOTE_CS5 554
-#define NOTE_D5  587
-#define NOTE_DS5 622
-#define NOTE_E5  659
-#define NOTE_F5  698
-#define NOTE_FS5 740
-#define NOTE_G5  784
-#define NOTE_GSH  830
-#define NOTE_GS5 831
-#define NOTE_A5  880
-#define NOTE_AS5 932
-#define NOTE_B5  988
-#define NOTE_C6  1047
-#define NOTE_CS6 1109
-#define NOTE_D6  1175
-#define NOTE_DS6 1245
-#define NOTE_E6  1319
-#define NOTE_F6  1397
-#define NOTE_FS6 1480
-#define NOTE_G6  1568
-#define NOTE_GS6 1661
-#define NOTE_A6  1760
-#define NOTE_AS6 1865
-#define NOTE_B6  1976
-#define NOTE_C7  2093
-#define NOTE_CS7 2217
-#define NOTE_D7  2349
-#define NOTE_DS7 2489
-#define NOTE_E7  2637
-#define NOTE_F7  2794
-#define NOTE_FS7 2960
-#define NOTE_G7  3136
-#define NOTE_GS7 3322
-#define NOTE_A7  3520
-#define NOTE_AS7 3729
-#define NOTE_B7  3951
-#define NOTE_C8  4186
-#define NOTE_CS8 4435
-#define NOTE_D8  4699
-#define NOTE_DS8 4978
-
 //CONFIGURATION DE L'ANNEAU DE LEDS
 const int LEDRING = 55;
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(12, LEDRING, NEO_GRB + NEO_KHZ800);
@@ -255,7 +162,7 @@ void loop() {
    if (Ligne != "") { // Si Ligne de valeur reçue est vide, on ne fait rien sinon 
     Ligne2 = Ligne.toInt(); // On transforme le String en long via toInt()
     switch (Ligne2) { // En fonction du retour du long reçu on fait une action
-      case 0: // Si la valeur 0 est envoyée, c'est donc le premier cocktail, Ti'Punch
+      case 1: // Si la valeur 0 est envoyée, c'est donc le premier cocktail, Ti'Punch
         Serial.println("Service du cocktail numéro 1 !");
         posMenu = 0; 
         distribution();
@@ -263,8 +170,157 @@ void loop() {
         posMenu = 0;
         ligne2 = Menu[posMenu];
         break;
+      case 2:
+        Serial.println("Service du cocktail numéro 2 !");
+        posMenu = 1; 
+        distribution();
+        mode=0; // On revient au mode général
+        posMenu = 0;
+        ligne2 = Menu[posMenu];
+        break;
+      case 3:
+        Serial.println("Service du cocktail numéro 3 !");
+        posMenu = 2; 
+        distribution();
+        mode=0; // On revient au mode général
+        posMenu = 0;
+        ligne2 = Menu[posMenu];
+        break;
+      case 4:
+        Serial.println("Service du cocktail numéro 4 !");
+        posMenu = 3; 
+        distribution();
+        mode=0; // On revient au mode général
+        posMenu = 0;
+        ligne2 = Menu[posMenu];
+        break;
+      case 5:
+        Serial.println("Service du cocktail numéro 5 !");
+        posMenu = 4; 
+        distribution();
+        mode=0; // On revient au mode général
+        posMenu = 0;
+        ligne2 = Menu[posMenu];
+        break;
+      case 6:
+        Serial.println("Service du cocktail numéro 6 !");
+        posMenu = 5; 
+        distribution();
+        mode=0; // On revient au mode général
+        posMenu = 0;
+        ligne2 = Menu[posMenu];
+        break;
+      case 7:
+        Serial.println("Service du cocktail numéro 7 !");
+        posMenu = 6; 
+        distribution();
+        mode=0; // On revient au mode général
+        posMenu = 0;
+        ligne2 = Menu[posMenu];
+        break;
+      case 8:
+        Serial.println("Service du cocktail numéro 8 !");
+        posMenu = 7; 
+        distribution();
+        mode=0; // On revient au mode général
+        posMenu = 0;
+        ligne2 = Menu[posMenu];
+        break;
+      case 9:
+        Serial.println("Service du cocktail numéro 9 !");
+        posMenu = 8; 
+        distribution();
+        mode=0; // On revient au mode général
+        posMenu = 0;
+        ligne2 = Menu[posMenu];
+        break;
       case 10:
-        Serial.println("Je suis 10!");
+        Serial.println("Service du cocktail numéro 10 !");
+        posMenu = 9; 
+        distribution();
+        mode=0; // On revient au mode général
+        posMenu = 0;
+        ligne2 = Menu[posMenu];
+        break;
+      case 11:
+        Serial.println("Service du cocktail numéro 11 !");
+        posMenu = 10; 
+        distribution();
+        mode=0; // On revient au mode général
+        posMenu = 0;
+        ligne2 = Menu[posMenu];
+        break;
+      case 12:
+        Serial.println("Service du cocktail numéro 12 !");
+        posMenu = 11; 
+        distribution();
+        mode=0; // On revient au mode général
+        posMenu = 0;
+        ligne2 = Menu[posMenu];
+        break;
+      case 13:
+        Serial.println("Service du cocktail numéro 13 !");
+        posMenu = 12; 
+        distribution();
+        mode=0; // On revient au mode général
+        posMenu = 0;
+        ligne2 = Menu[posMenu];
+        break;
+      case 14:
+        Serial.println("Service du cocktail numéro 14 !");
+        posMenu = 13; 
+        distribution();
+        mode=0; // On revient au mode général
+        posMenu = 0;
+        ligne2 = Menu[posMenu];
+        break;
+      case 15:
+        Serial.println("Service du cocktail numéro 15 !");
+        posMenu = 14; 
+        distribution();
+        mode=0; // On revient au mode général
+        posMenu = 0;
+        ligne2 = Menu[posMenu];
+        break;
+      case 16:
+        Serial.println("Service du cocktail numéro 16 !");
+        posMenu = 15; 
+        distribution();
+        mode=0; // On revient au mode général
+        posMenu = 0;
+        ligne2 = Menu[posMenu];
+        break;
+      case 17:
+        Serial.println("Service du cocktail numéro 17 !");
+        posMenu = 16; 
+        distribution();
+        mode=0; // On revient au mode général
+        posMenu = 0;
+        ligne2 = Menu[posMenu];
+        break;
+      case 18:
+        Serial.println("Service du cocktail numéro 18 !");
+        posMenu = 17; 
+        distribution();
+        mode=0; // On revient au mode général
+        posMenu = 0;
+        ligne2 = Menu[posMenu];
+        break;
+      case 19:
+        Serial.println("Service du cocktail numéro 19 !");
+        posMenu = 18; 
+        distribution();
+        mode=0; // On revient au mode général
+        posMenu = 0;
+        ligne2 = Menu[posMenu];
+        break;
+      case 20:
+        Serial.println("Service du cocktail numéro 20 !");
+        posMenu = 19; 
+        distribution();
+        mode=0; // On revient au mode général
+        posMenu = 0;
+        ligne2 = Menu[posMenu];
         break;
       default:
         Serial.println("Erreur");
