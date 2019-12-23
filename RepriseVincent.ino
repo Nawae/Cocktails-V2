@@ -39,12 +39,12 @@ const String ligne1[] = {"MODE :              ","Cocktails :           ","Distri
 const String Menu[] = {"1 - Cocktails      ", "2 - Distribution", "3 - Setup       "}; // Affichage du mode Menu 0
 String ligne2 = Menu[0]; // Initiation de la ligne 2 sur le menu pour le premier démarrage
 const int nombreDeMenu = 3; // Constante du nombre de menu pour le modulo
-const String Recettes[] = {"1-Margarita      ", "2-Bourbon Coca    ", "3-Rhum Coca      ", "4-Cosmopolitan      ","5-Blue Lagoon      ","6-Daiquiri    ","7-Long Island Ice Tea     ","8-Coca Cola       ","9-Cuba Libre     ","10-Black Russian       ", "11-Screwdriver     ", "12-42nd Street  ", "13-Orange Blossom  ", "14-Bourbon Sour  ", "15-Bourdon     ", "16-Tequila Sunrise  ", "17-Red Lion     ", "18-Rainbow Shot The Sheriff  ", "19-Kentucky Road  ", "20-White Lady   ", "RETOUR             "}; // Tableau de recette
+const String Recettes[] = {"1-Margarita      ", "2-Bourbon Coca    ", "3-Rhum Coca      ", "4-Cosmopolitan      ","5-Blue Lagoon      ","6-Daiquiri      ","7-Long Island Ice Tea     ","8-Coca Cola       ","9-Cuba Libre     ","10-Black Russian       ", "11-Screwdriver     ", "12-42nd Street  ", "13-Orange Blossom  ", "14-Bourbon Sour   ", "15-Bourbon      ", "16-Tequila Sunrise  ", "17-Red Lion     ", "18-Rainbow Shot The Sheriff  ", "19-Kentucky Road  ", "20-White Lady   ", "RETOUR             "}; // Tableau de recette
 //const String Recettes[13] = {"1-Ti Punch      "}; // Tableau de recette
 const int nombreDeRecettes = 21; // Permet le modula pour revenir à 1 en cycle navigation (+1 pour RETOUR)
-const String Pompes[] = {"Coca                ", "Jack Daniel's   ", "Woodford Reserve   ", "Vodka           ", "Rhum Blanc      ", "Gin           ", "Bacardi         ", "Canadou       ", "Jus d'Orange    ", "Tequila          ", "Cointreau    ", "Curacao Bleu    ", "Citron Vert   ", "Cranberry   ", "Vermouth Dry   ", "Citron           ", "Rye Whisky    ", "Kahlua     ", "Grenadine     ", "RETOUR            "}; // Affichage du menu pour la distribution
+const String Pompes[] = {"Coca                ", "Jack Daniel's   ", "Woodford Reserve   ", "Vodka           ", "Rhum Blanc      ", "Gin           ", "Bacardi         ", "Canadou       ", "Jus d'Orange    ", "Tequila          ", "Cointreau    ", "Curacao Bleu    ", "Citron Vert   ", "Cranberry   ", "Vermouth Dry   ", "Citron           ", "Rye Whisky      ", "Kahlua       ", "Grenadine       ", "Invite Mistere     ", "RETOUR            "}; // Affichage du menu pour la distribution
 //const String Pompes[] = {"Pompe 1 ", "Pompe 2 "}; // Affichage du menu pour la distribution
-const int nombreDePompes = 20; // Constante du nombre de pompe pour le modulo (+1 pour RETOUR)
+const int nombreDePompes = 21; // Constante du nombre de pompe pour le modulo (+1 pour RETOUR)
 int lapompe ; // Variable pour sauvegarder le numéro de la pompe
 const String CL[] = {"1 cl            ", "2 cl            ", "3 cl            ", "4 cl            ", "5 cl            ", "6 cl            ", "7 cl            ", "8 cl            ", "9 cl            ", "10 cl          "}; // Affichage pour la distribution unique
 //const String CL[] = {"1 cl    ", "2 cl    ", "3 cl    "}; // Affichage pour la distribution unique
@@ -130,7 +130,7 @@ void setup() {
   // Configuration Bluetooth
   Serial.begin(9600);
   Serial.println("ENTER AT Commands:");
-  Serial3.begin(9600); // 38400 Pour le mode commande et KEY branché sur 3,3, sinon 9600 et câble débranché
+  Serial3.begin(9600); // 38400 (OK en 9600 AT+PASS) Pour le mode commande et KEY (Jaune) branché sur 3,3, sinon 9600 et câble débranché
 }
 
 void loop() {
@@ -418,9 +418,9 @@ void navigation() {
           ligne2 = Menu[posMenu];
           }
         }
-     if (etatBoutUnique) { // Si le bouton Initialisation est appuyé
-       distrunique(); //On lance la fonction qui charge les tuyaux
-      }
+     if (etatBoutUnique) { // Si le bouton supplémentaire est appuyé
+       distrunique(); //On lance la distribution pour le whisky
+     }
      }
      delay(200); //attente pour éviter les répétitions
      break;
@@ -446,30 +446,6 @@ void navigation() {
           posMenu = 0;
         }
         else { // On a validé le choix de la pompe. On sauvegarde le numéro, et on propose le nombre de cl.
-       // const int orange = 22; // Pin rattaché à la board relais, auquel est relié l'alimentation du moteur contrôlant la pompe de jus d'Orange.
-       // const int schwepps = 23; // Pin pour la board relais
-       // const int grenadine = 24; // Pin pour la board relais
-       // const int ananas = 25; // Pin pour la board relais
-       // const int citron = 26; // Pin pour la board relais
-       // const int rhum = 27; // Pin pour la board relais
-       // const int gin = 28; // Pin pour la board relais
-       // const int canadou = 29; // Pin pour la board relais
-       // const int whisky = 30; // Pin pour la board relais
-       // const int boisson1 = 31; // Pin pour la board relais
-       // const int boisson2 = 32; // Pin pour la board relais
-       // const int boisson3 = 33; // Pin pour la board relais
-       // const int boisson4 = 34; // Pin pour la board relais
-       // const int boisson5 = 35; // Pin pour la board relais
-       // const int boisson6 = 36; // Pin pour la board relais
-       // const int boisson7 = 37; // Pin pour la board relais
-       // const int boisson8 = 39; // Pin pour la board relais
-       // const int boisson9 = 41; // Pin pour la board relais
-       // const int boisson10 = 43; // Pin pour la board relais
-       // const int boisson11 = 45; // Pin pour la board relais
-       // const int boisson12 = 47; // Pin pour la board relais
-       // const int boisson13 = 49; // Pin pour la board relais
-       // const int boisson14 = 51; // Pin pour la board relais
-       // const int boisson15 = 53; // Pin pour la board relais
        switch (posMenu) {
           case 0:
             // La pompe 1
@@ -543,8 +519,8 @@ void navigation() {
        ligne2 = CL[posMenu];
         }
       }
-     if (etatBoutUnique) { // Si le bouton Initialisation est appuyé
-       distrunique(); //On lance la fonction qui charge les tuyaux
+     if (etatBoutUnique) { // Si le bouton supplémentaire est appuyé
+       distrunique(); //On lance la distribution pour le whisky
      }
      }
      delay(200); //attente pour éviter les répétitions
@@ -583,8 +559,8 @@ void navigation() {
        }
        }
        }
-     if (etatBoutUnique) { // Si le bouton Initialisation est appuyé
-       distrunique(); //On lance la fonction qui charge les tuyaux
+     if (etatBoutUnique) { // Si le bouton supplémentaire est appuyé
+       distrunique(); //On lance la distribution pour le whisky
      }
      }
      delay(200); //attente pour éviter les répétitions
@@ -634,8 +610,8 @@ void navigation() {
       //ligne2 = Menu[0];
       ligne2 = Pompes[0]; // On réaffiche la deuxieme ligne correspondant au choix de la Pompes pour le shaker
      }
-     if (etatBoutUnique) { // Si le bouton Initialisation est appuyé
-       distrunique(); //On lance la fonction qui charge les tuyaux
+     if (etatBoutUnique) { // Si le bouton supplémentaire est appuyé
+       distrunique(); //On lance la distribution pour le whisky
      }
      }
      delay(200); //attente pour éviter les répétitions
@@ -734,13 +710,13 @@ void navigation() {
       digitalWrite(lapompe, LOW); // On ouvre la pompe
       do // On lance une boucle qui ne s'arrêtera qu'à la fin du chargement.
       {
-       avancement = ((millis() - temps)/conv(2)*100);
+       avancement = ((millis() - temps)/conv(1)*100);
        draw_progressbar(avancement);
-       pompeV2(lapompe,2); //  Si la Pompe est activée, alors on regarde si elle a pu délivrer x Cl ( x CL = X * 6000 millisecondes). Si c'est le cas, alors on coupe la pompe, sinon on laisse allumer.
+       pompeV2(lapompe,1); //  Si la Pompe est activée, alors on regarde si elle a pu délivrer x Cl ( x CL = X * 6000 millisecondes). Si c'est le cas, alors on coupe la pompe, sinon on laisse allumer.
        //Serial.println((millis() - temps));
-      } while ((millis() - temps) < conv(2)); // Tant qu'on ne dépasse pas le temps nécessaire au plus grand liquide
+      } while ((millis() - temps) < conv(1)); // Tant qu'on ne dépasse pas le temps nécessaire au plus grand liquide
       monEcran.clear(); // On efface l'écran pour éviter de voir le reste de la barre de progression
-      posMenu = 0 ; // On remet au debut de la ligne
+      //20191214 On commente pour ne pas voir afficher Coca à chaque Chargement //posMenu = 0 ; // On remet au debut de la ligne
       //mode = 0 ;
       mode = 5 ; // Repositionnement du mode , mode de chargement unique, pour éviter de devoir renaviguer pour un autre chargement.
       //ligne2 = Menu[0];
@@ -847,21 +823,21 @@ void navigation() {
       digitalWrite(lapompe, LOW);
       do // On lance une boucle qui ne s'arrêtera qu'à la fin du chargement.
       {
-       avancement = ((millis() - temps)/conv(1)*100);
+       avancement = ((millis() - temps)/conv(4)*100);
        draw_progressbar(avancement);
-       pompeV2(lapompe,1); //  Si la Pompe est activée, alors on regarde si elle a pu délivrer x Cl ( x CL = X * 6000 millisecondes). Si c'est le cas, alors on coupe la pompe, sinon on laisse allumer.
+       pompeV2(lapompe,4); //  Si la Pompe est activée, alors on regarde si elle a pu délivrer x Cl ( x CL = X * 6000 millisecondes). Si c'est le cas, alors on coupe la pompe, sinon on laisse allumer.
        //Serial.println((millis() - temps));
-      } while ((millis() - temps) < conv(1)); // Tant qu'on ne dépasse pas le temps nécessaire au plus grand liquide
+      } while ((millis() - temps) < conv(4)); // Tant qu'on ne dépasse pas le temps nécessaire au plus grand liquide
       monEcran.clear(); // On efface l'écran pour éviter de voir le reste de la barre de progression
-      posMenu = 0 ; // On remet au debut de la ligne
+      //20191214 On commente pour ne pas voir afficher Coca à chaque Chargement //posMenu = 0 ; // On remet au debut de la ligne
       //mode = 0 ;
       mode = 6 ; // Repositionnement du mode , mode de purge unique, pour éviter de devoir renaviguer pour une autre purge.
       //ligne2 = Menu[0];
       ligne2 = Pompes[posMenu]; // On réaffiche la deuxieme ligne correspondant au choix de la Pompes
         }
       }
-     if (etatBoutUnique) { // Si le bouton Initialisation est appuyé
-       distrunique(); //On lance la fonction qui charge les tuyaux
+     if (etatBoutUnique) { // Si le bouton supplémentaire est appuyé
+       distrunique(); //On lance la distribution pour le whisky
      }
      }
      delay(200); //attente pour éviter les répétitions
@@ -925,9 +901,9 @@ void distribution() {
       digitalWrite(jack, LOW);
       do // On lance une boucle qui ne s'arrêtera qu'à la fin du liquide le plus présent.
       {
-       avancement = ((millis() - temps)/conv(12)*100);
+       avancement = ((millis() - temps)/conv(3)*100);
        draw_progressbar(avancement);
-       pompeV2(coca,12); //  Si la Pompe est activée, alors on regarde si elle a pu délivrer x Cl ( x CL = X * 6000 millisecondes). Si c'est le cas, alors on coupe la pompe, sinon on laisse allumer.
+       pompeV2(coca,3); //  Si la Pompe est activée, alors on regarde si elle a pu délivrer x Cl ( x CL = X * 6000 millisecondes). Si c'est le cas, alors on coupe la pompe, sinon on laisse allumer.
        pompeV2(jack,3);
       // Début du rainbow maison
       for(i=0; i<strip.numPixels(); i++) { // Pour chaque led du Ring, 
@@ -940,7 +916,7 @@ void distribution() {
       }
       // Fin du rainbow maison  
        //Serial.println((millis() - temps));
-      } while ((millis() - temps) < conv(12)); // Tant qu'on ne dépasse pas le temps nécessaire au plus grand liquide
+      } while ((millis() - temps) < conv(3)); // Tant qu'on ne dépasse pas le temps nécessaire au plus grand liquide
       break;
      case 2: // Rhum Coca
       //On allume toutes les pomptes du cocktails
@@ -948,9 +924,9 @@ void distribution() {
       digitalWrite(bacardi, LOW);
       do // On lance une boucle qui ne s'arrêtera qu'à la fin du liquide le plus présent.
       {
-       avancement = ((millis() - temps)/conv(12)*100);
+       avancement = ((millis() - temps)/conv(3)*100);
        draw_progressbar(avancement);
-       pompeV2(coca,12); //  Si la Pompe est activée, alors on regarde si elle a pu délivrer x Cl ( x CL = X * 6000 millisecondes). Si c'est le cas, alors on coupe la pompe, sinon on laisse allumer.
+       pompeV2(coca,3); //  Si la Pompe est activée, alors on regarde si elle a pu délivrer x Cl ( x CL = X * 6000 millisecondes). Si c'est le cas, alors on coupe la pompe, sinon on laisse allumer.
        pompeV2(bacardi,3);
       // Début du rainbow maison
       for(i=0; i<strip.numPixels(); i++) { // Pour chaque led du Ring, 
@@ -963,7 +939,7 @@ void distribution() {
       }
       // Fin du rainbow maison  
       //Serial.println((millis() - temps));
-      } while ((millis() - temps) < conv(12)); // Tant qu'on ne dépasse pas le temps nécessaire au plus grand liquide
+      } while ((millis() - temps) < conv(3)); // Tant qu'on ne dépasse pas le temps nécessaire au plus grand liquide
       break;
      case 3: // Cosmopolitan
       //On allume toutes les pomptes du cocktails
@@ -1078,9 +1054,9 @@ void distribution() {
       digitalWrite(coca, LOW);
       do // On lance une boucle qui ne s'arrêtera qu'à la fin du liquide le plus présent.
       {
-       avancement = ((millis() - temps)/conv(3)*100);
+       avancement = ((millis() - temps)/conv(1)*100);
        draw_progressbar(avancement);
-       pompeV2(coca,3); //  Si la Pompe est activée, alors on regarde si elle a pu délivrer x Cl ( x CL = X * 6000 millisecondes). Si c'est le cas, alors on coupe la pompe, sinon on laisse allumer.
+       pompeV2(coca,1); //  Si la Pompe est activée, alors on regarde si elle a pu délivrer x Cl ( x CL = X * 6000 millisecondes). Si c'est le cas, alors on coupe la pompe, sinon on laisse allumer.
       // Début du rainbow maison
       for(i=0; i<strip.numPixels(); i++) { // Pour chaque led du Ring, 
       strip.setPixelColor(i, Wheel((i+j) & 255)); // On attribue une couleur
@@ -1092,7 +1068,7 @@ void distribution() {
       }
       // Fin du rainbow maison  
        //Serial.println((millis() - temps));
-      } while ((millis() - temps) < conv(3)); // Tant qu'on ne dépasse pas le temps nécessaire au plus grand liquide
+      } while ((millis() - temps) < conv(1)); // Tant qu'on ne dépasse pas le temps nécessaire au plus grand liquide
       break;
      case 8: // Cuba Libre
       //On allume toutes les pomptes du cocktails
@@ -1101,9 +1077,9 @@ void distribution() {
       digitalWrite(citronv, LOW);
       do // On lance une boucle qui ne s'arrêtera qu'à la fin du liquide le plus présent.
       {
-       avancement = ((millis() - temps)/conv(15)*100);
+       avancement = ((millis() - temps)/conv(6)*100);
        draw_progressbar(avancement);
-       pompeV2(coca,15); //  Si la Pompe est activée, alors on regarde si elle a pu délivrer x Cl ( x CL = X * 6000 millisecondes). Si c'est le cas, alors on coupe la pompe, sinon on laisse allumer.
+       pompeV2(coca,3); //  Si la Pompe est activée, alors on regarde si elle a pu délivrer x Cl ( x CL = X * 6000 millisecondes). Si c'est le cas, alors on coupe la pompe, sinon on laisse allumer.
        pompeV2(bacardi,6);
        pompeV2(citronv,4);
       // Début du rainbow maison
@@ -1117,7 +1093,7 @@ void distribution() {
       }
       // Fin du rainbow maison  
        //Serial.println((millis() - temps));
-      } while ((millis() - temps) < conv(15)); // Tant qu'on ne dépasse pas le temps nécessaire au plus grand liquide
+      } while ((millis() - temps) < conv(6)); // Tant qu'on ne dépasse pas le temps nécessaire au plus grand liquide
       break;
      case 9: // Black Russian
       //On allume toutes les pomptes du cocktails
@@ -1346,9 +1322,9 @@ void distribution() {
       digitalWrite(citron, LOW);
       do // On lance une boucle qui ne s'arrêtera qu'à la fin du liquide le plus présent.
       {
-       avancement = ((millis() - temps)/conv(4)*100);
+       avancement = ((millis() - temps)/conv(1)*100);
        draw_progressbar(avancement);
-       pompeV2(coca,2); //  Si la Pompe est activée, alors on regarde si elle a pu délivrer x Cl ( x CL = X * 6000 millisecondes). Si c'est le cas, alors on coupe la pompe, sinon on laisse allumer.
+       pompeV2(coca,1); //  Si la Pompe est activée, alors on regarde si elle a pu délivrer x Cl ( x CL = X * 6000 millisecondes). Si c'est le cas, alors on coupe la pompe, sinon on laisse allumer.
        pompeV2(jack,4);
        pompeV2(citron,4);
       // Début du rainbow maison
@@ -1362,7 +1338,7 @@ void distribution() {
       }
       // Fin du rainbow maison  
        //Serial.println((millis() - temps));
-      } while ((millis() - temps) < conv(10)); // Tant qu'on ne dépasse pas le temps nécessaire au plus grand liquide
+      } while ((millis() - temps) < conv(1)); // Tant qu'on ne dépasse pas le temps nécessaire au plus grand liquide
       break;
      case 19: // White Lady
       //On allume toutes les pomptes du cocktails
@@ -1426,8 +1402,7 @@ void distribution() {
 //FONCTION CONVERSATION CL EN MILLISECONDES
 //Permet de changer de moteur sans changer tout le code.
 long conv(long a) { // a = nombre de CL
-  //return a*6000; // Ici, c'est donc le temps à mettre en milliseconde qui correspond à 1 cl en fonction de la longueur des tuyaux.
-  return a*1000; // Ici, c'est donc le temps à mettre en milliseconde qui correspond à 1 cl en fonction de la longueur des tuyaux.
+  return a*6000; // Ici, c'est donc le temps à mettre en milliseconde qui correspond à 1 cl en fonction de la puissance des moteurs.
 }
 
 //FONCTION POMPES CL  fonction permettant de rentrer l'alcool, la dose, et de faire les vérifications nécessaires
@@ -1441,7 +1416,7 @@ void pompeV2(int a, int b) { // a = numéro du PIN activant le relais; b = centi
   }
 }
 
-//FONCTION INITIALISATION DES POMPES
+//FONCTION WHISKY
 void distrunique() {
   monEcran.clear(); // On efface l'écran
   monEcran.setCursor(0, 0); // On initialise le curseur en haut
@@ -1458,11 +1433,11 @@ void distrunique() {
    pompeV2(posMenu,4); //  Si la Pompe est activée, alors on regarde si elle a pu délivrer x Cl ( x CL = X * 6000 millisecondes). Si c'est le cas, alors on coupe la pompe, sinon on laisse allumer.
    //Serial.println((millis() - temps));
    } while ((millis() - temps) < conv(4)); // Tant qu'on ne dépasse pas le temps nécessaire au plus grand liquide
+   digitalWrite(whisky, HIGH);
    posMenu = 0 ;
    mode = 0 ; 
    ligne2 = Menu[posMenu];
-
-    Simpson();
+   //Simpson();
 }
 
 //FONCTION INITIALISATION DES POMPES
